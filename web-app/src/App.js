@@ -3,23 +3,24 @@ import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      'Temperature': 0
+    }
+    const socket = openSocket('localhost:8080')
+    socket.on('send data', (json) => {
+      console.log(json)
+      this.setState({
+        'Temperature': parseInt(json.message, 10)
+      })
+    })
+  }
+  
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <ReactSpeedometer value={this.state.Temperature} minValue={-50} maxValue={50} startColor="#ff471a" endColor="#ff471a"/>
       </div>
     );
   }
