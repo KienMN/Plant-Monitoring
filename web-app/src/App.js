@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import openSocket from 'socket.io-client'
+import ReactSpeedometer from 'react-d3-speedometer'
 
 class App extends Component {
   constructor(props) {
