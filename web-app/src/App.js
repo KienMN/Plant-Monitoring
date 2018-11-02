@@ -8,7 +8,7 @@ class App extends Component {
     this.state = {
       'Temperature': 0
     }
-    const socket = openSocket('localhost:8080')
+    const socket = openSocket('localhost:9001')
     socket.on('send data', (json) => {
       console.log(json)
       this.setState({

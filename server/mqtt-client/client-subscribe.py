@@ -22,8 +22,8 @@ def on_message(client, userdata, msg):
   topic = msg.topic
   message = str(msg.payload.decode('UTF-8'))
   print(topic, message)
-  # with SocketIO('localhost', 8080) as socketio:
-  #   socketio.emit('my event', {'topic': topic, 'message': message})
+  with SocketIO('localhost', 9001) as socketio:
+    socketio.emit('my event', {'topic': topic, 'message': message})
 
 client = mqtt.Client(client_id='testtttt1')
 # client.on_log = on_log
