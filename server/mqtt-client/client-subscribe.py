@@ -12,6 +12,7 @@ def on_connect(client, userdata, flags, rc):
     print("Connected")
     client.subscribe('AT2018/Temperature')
     client.subscribe('AT2018/Humidity')
+    client.subscribe('AT2018/SoilMoisture')
   else:
     print("Bad connection. Returned code", rc)
 
