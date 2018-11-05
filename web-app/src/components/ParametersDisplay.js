@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import openSocket from 'socket.io-client'
 import ReactSpeedometer from 'react-d3-speedometer'
-import { Button, Row, Col } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
 
 const websocketServer = 'localhost:9001'
 
@@ -15,7 +15,7 @@ class ParametersDisplay extends Component {
       'LightIntensity': 0
     }
     let socket = openSocket(websocketServer)
-    socket.on('send data', (json) => {
+    socket.on('webapp monitoring', (json) => {
       console.log(json)
       switch (json.topic) {
         case "AT2018/Temperature":
@@ -33,6 +33,12 @@ class ParametersDisplay extends Component {
           soilMoisture = (1024 - soilMoisture) * 100 / 1024
           this.setState({
             'SoilMoisture': soilMoisture
+          })
+          break
+        case "AT2018/LightIntensity":
+          let lightIntensity = parseInt(json.message, 10)
+          this.setState({
+            'LightIntensity': lightIntensity
           })
           break
         default:
@@ -62,9 +68,6 @@ class ParametersDisplay extends Component {
             <ReactSpeedometer value={this.state.LightIntensity} minValue={0} maxValue={100} startColor="#ff471a" endColor="#ff471a" />
           </Col>
         </Row>
-        
-        
-        <Button bsStyle="primary">Click me</Button>
       </div>
     )
   }

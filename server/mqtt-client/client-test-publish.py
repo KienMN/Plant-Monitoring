@@ -28,12 +28,14 @@ client.on_disconnect = on_disconnect
 
 print('Connecting to broker', broker)
 client.connect(broker)
-
-# client.subscribe('AT2018/Temperature')
 i = 1
 while(True):
   client.loop_start()
   client.publish('AT2018/Temperature', str(i).encode('UTF-8'))
+  client.publish('AT2018/Humidity', str(i).encode('UTF-8'))
+  client.publish('AT2018/SoilMoisture', str(i).encode('UTF-8'))
+  client.publish('AT2018/LightIntensity', str(i).encode('UTF-8'))
+  client.publish('AT2018/PumpingStatus', str(i).encode('UTF-8'))
   time.sleep(20)
   client.loop_stop()
   i += 1
