@@ -1,8 +1,11 @@
 import paho.mqtt.client as mqtt
 import time
 from socketIO_client import SocketIO
+import datetime
+from pymongo import MongoClient
 
 broker = 'broker.hivemq.com'
+record = {}
 
 def on_log(client, userdata, level, buff):
   print('Log', buff)
@@ -26,7 +29,30 @@ def on_message(client, userdata, msg):
   # Getting data from broker
   topic = msg.topic
   message = str(msg.payload.decode('UTF-8'))
-  print(topic, message)
+  # print(topic, message)
+  ts = time.localtime()
+  date_and_time = time.strftime("%Y-%m-%d %H:%M:%S", ts)
+  # print(date_and_time)
+  global record
+  record["Timestamp"] = date_and_time
+  if topic == 'AT2018/Temperature':
+    record["Temperature"] = message
+  elif topic == 'AT2018/Humidity':
+    record["Humidity"] = message
+  elif topic == 'AT2018/SoilMoisture':
+    record["SoilMoisture"] = message
+  elif topic == 'AT2018/LightIntensity':
+    record["LightIntensity"] = message
+  elif topic == 'AT2018/PumpingStatus':
+    record["PumpingStatus"] = message
+  if (len(record) == 6):
+    print(record)
+    mongo_client = MongoClient('localhost', 27017)
+    db = mongo_client.plant_monitoring
+    collection = db.sensor_data
+    collection.insert_one(record)
+    record = {}
+
   # Emitting data to websocket server
   with SocketIO('localhost', 9001) as socketio:
     socketio.emit('monitoring', {'topic': topic, 'message': message})
