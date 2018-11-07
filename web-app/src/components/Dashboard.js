@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import ParameterDisplay from './ParametersDisplay'
 import WateringControl from './WateringControl';
 import openSocket from 'socket.io-client'
+import { Row, Col } from 'react-bootstrap';
 
-const websocketServer = 'localhost:9001'
+const websocketServer = '192.168.1.13:9001'
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -30,10 +31,8 @@ export default class Dashboard extends Component {
           })
           break
         case "AT2018/SoilMoisture":
-          let soilMoisture = parseInt(json.message, 10)
-          soilMoisture = (1024 - soilMoisture) * 100 / 1024
           this.setState({
-            'SoilMoisture': soilMoisture
+            'SoilMoisture': parseInt(json.message, 10)
           })
           break
         case "AT2018/LightIntensity":
@@ -57,7 +56,7 @@ export default class Dashboard extends Component {
   }
 
   pumpRequest() {
-    let v = (this.state.PumpingStatus) ? 0 : 100
+    let v = (this.state.PumpingStatus) ? 0 : 1023
     this.state.socket.emit("pumping", { value: v })
   }
 
@@ -66,7 +65,15 @@ export default class Dashboard extends Component {
       <div>
         <ParameterDisplay temperature={this.state.Temperature} humidity={this.state.Humidity}
           soilMoisture={this.state.SoilMoisture} lightIntensity={this.state.LightIntensity} />
-        <WateringControl pumpingStatus={this.state.PumpingStatus} pump={this.pumpRequest}/>
+        <Row>
+          <Col sm={6} xs={12}>
+            <h3>Average last 24 hours</h3>
+          </Col>
+          <Col sm={6} xs={12}>
+            <WateringControl pumpingStatus={this.state.PumpingStatus} pump={this.pumpRequest} />
+          </Col>
+        </Row>
+
       </div>
     )
   }

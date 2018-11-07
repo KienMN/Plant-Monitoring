@@ -40,17 +40,20 @@ def on_message(client, userdata, msg):
   elif topic == 'AT2018/Humidity':
     record["Humidity"] = message
   elif topic == 'AT2018/SoilMoisture':
+    v = int(message)
+    v = (1024 - v) * 100 // 1024
+    message = str(v)
     record["SoilMoisture"] = message
-  elif topic == 'AT2018/LightIntensity':
-    record["LightIntensity"] = message
+  # elif topic == 'AT2018/LightIntensity':
+  #   record["LightIntensity"] = message
   elif topic == 'AT2018/PumpingStatus':
     record["PumpingStatus"] = message
-  if (len(record) == 6):
+  if (len(record) == 5):
     print(record)
-    mongo_client = MongoClient('localhost', 27017)
-    db = mongo_client.plant_monitoring
-    collection = db.sensor_data
-    collection.insert_one(record)
+    # mongo_client = MongoClient('localhost', 27017)
+    # db = mongo_client.plant_monitoring
+    # collection = db.sensor_data
+    # collection.insert_one(record)
     record = {}
 
   # Emitting data to websocket server

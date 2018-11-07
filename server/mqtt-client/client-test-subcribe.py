@@ -21,10 +21,10 @@ def on_message(client, userdata, msg):
   topic = msg.topic
   message = str(msg.payload.decode('UTF-8'))
   print(topic, message)
-  if int(message) == 100:
-    client.publish('AT2018/PumpingStatus', 1)
-  else:
-    client.publish('AT2018/PumpingStatus', 0)
+  # if int(message) == 100:
+  #   client.publish('AT2018/PumpingStatus', 1)
+  # else:
+  #   client.publish('AT2018/PumpingStatus', 0)
 
 client = mqtt.Client(client_id='testtttt3')
 # client.on_log = on_log
