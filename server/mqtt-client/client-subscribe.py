@@ -17,7 +17,6 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe('AT2018/Humidity')
     client.subscribe('AT2018/SoilMoisture')
     client.subscribe('AT2018/LightIntensity')
-    # client.subscribe('AT2018/Watering')
     client.subscribe('AT2018/PumpingStatus')
   else:
     print("Bad connection. Returned code", rc)
@@ -44,16 +43,19 @@ def on_message(client, userdata, msg):
     v = (1024 - v) * 100 // 1024
     message = str(v)
     record["SoilMoisture"] = message
-  # elif topic == 'AT2018/LightIntensity':
-  #   record["LightIntensity"] = message
+  elif topic == 'AT2018/LightIntensity':
+    v = int(message)
+    v = 1024 - v
+    message = str(v)
+    record["LightIntensity"] = message
   elif topic == 'AT2018/PumpingStatus':
     record["PumpingStatus"] = message
-  if (len(record) == 5):
+  if (len(record) == 6):
     print(record)
-    # mongo_client = MongoClient('localhost', 27017)
-    # db = mongo_client.plant_monitoring
-    # collection = db.sensor_data
-    # collection.insert_one(record)
+    mongo_client = MongoClient('localhost', 27017)
+    db = mongo_client.plant_monitoring
+    collection = db.sensor_data
+    collection.insert_one(record)
     record = {}
 
   # Emitting data to websocket server

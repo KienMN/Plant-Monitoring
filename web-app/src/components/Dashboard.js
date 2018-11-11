@@ -4,7 +4,7 @@ import WateringControl from './WateringControl';
 import openSocket from 'socket.io-client'
 import { Row, Col } from 'react-bootstrap';
 
-const websocketServer = '192.168.1.13:9001'
+const websocketServer = '192.168.1.14:9001'
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -56,7 +56,7 @@ export default class Dashboard extends Component {
   }
 
   pumpRequest() {
-    let v = (this.state.PumpingStatus) ? 0 : 1023
+    let v = (this.state.PumpingStatus) ? 0 : 512
     this.state.socket.emit("pumping", { value: v })
   }
 
