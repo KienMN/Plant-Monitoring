@@ -52,10 +52,10 @@ def on_message(client, userdata, msg):
     record["PumpingStatus"] = message
   if (len(record) == 6):
     print(record)
-    mongo_client = MongoClient('localhost', 27017)
-    db = mongo_client.plant_monitoring
-    collection = db.sensor_data
-    collection.insert_one(record)
+    # mongo_client = MongoClient('localhost', 27017)
+    # db = mongo_client.plant_monitoring
+    # collection = db.sensor_data
+    # collection.insert_one(record)
     record = {}
 
   # Emitting data to websocket server

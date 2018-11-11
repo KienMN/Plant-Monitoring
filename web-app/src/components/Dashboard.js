@@ -5,6 +5,7 @@ import openSocket from 'socket.io-client'
 import { Row, Col } from 'react-bootstrap';
 
 const websocketServer = 'fit5.fit-uet.tk:9001'
+// const websocketServer = '192.168.1.14:9001'
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -15,7 +16,8 @@ export default class Dashboard extends Component {
       'SoilMoisture': 0,
       'LightIntensity': 0,
       'PumpingStatus': false,
-      'socket': openSocket(websocketServer)
+      'socket': openSocket(websocketServer),
+      'PumpingSpeed': 250
     }
     this.state.socket.on('webapp monitoring', (json) => {
       console.log(json)
@@ -53,11 +55,23 @@ export default class Dashboard extends Component {
     })
 
     this.pumpRequest = this.pumpRequest.bind(this)
+    this.changePumpingSpeed = this.changePumpingSpeed.bind(this)
   }
 
   pumpRequest() {
-    let v = (this.state.PumpingStatus) ? 0 : 512
+    let v = (this.state.PumpingStatus) ? 0 : this.state.PumpingSpeed
     this.state.socket.emit("pumping", { value: v })
+  }
+
+  changePumpingSpeed(e) {
+    let newSpeed = parseInt(e.target.value, 10)
+    this.setState({
+      "PumpingSpeed": newSpeed
+    })
+    if (this.state.pumpingStatus) {
+      console.log(newSpeed)
+      this.state.socket.emit("pumping", { value: newSpeed })
+    }
   }
 
   render() {
@@ -70,7 +84,7 @@ export default class Dashboard extends Component {
             <h3>Average last 24 hours</h3>
           </Col>
           <Col sm={6} xs={12}>
-            <WateringControl pumpingStatus={this.state.PumpingStatus} pump={this.pumpRequest} />
+            <WateringControl pumpingStatus={this.state.PumpingStatus} pump={this.pumpRequest} speed={this.state.PumpingSpeed} changeSpeed={this.changePumpingSpeed}/>
           </Col>
         </Row>
 

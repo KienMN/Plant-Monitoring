@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button } from 'react-bootstrap'
+import { Button, FormControl } from 'react-bootstrap'
 
 export default class WateringControl extends Component {
 
@@ -8,6 +8,12 @@ export default class WateringControl extends Component {
       <div>
         <h3>Watering control</h3>
         <p>Pumping status: {(this.props.pumpingStatus) ? 'active' : 'deactive'}</p>
+        <FormControl
+          type="number"
+          value={this.props.speed}
+          onChange={this.props.changeSpeed}
+        >
+        </FormControl>
         <Button bsStyle={this.props.pumpingStatus?'danger':'primary'} onClick={this.props.pump}>{this.props.pumpingStatus?"Stop":"Start"}</Button>
       </div>
     )
