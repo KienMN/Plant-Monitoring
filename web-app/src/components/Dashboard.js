@@ -4,7 +4,7 @@ import WateringControl from './WateringControl';
 import openSocket from 'socket.io-client'
 import { Row, Col } from 'react-bootstrap';
 
-const websocketServer = '192.168.1.14:9001'
+const websocketServer = 'fit5.fit-uet.tk:9001'
 
 export default class Dashboard extends Component {
   constructor(props) {
