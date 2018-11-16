@@ -6,6 +6,7 @@ from pymongo import MongoClient
 
 broker = 'broker.hivemq.com'
 record = {}
+socketio = SocketIO('localhost', 9001)
 
 def on_log(client, userdata, level, buff):
   print('Log', buff)
@@ -51,7 +52,7 @@ def on_message(client, userdata, msg):
   elif topic == 'AT2018/PumpingStatus':
     record["PumpingStatus"] = message
   if (len(record) == 6):
-    print(record)
+    # print(record)
     mongo_client = MongoClient('localhost', 27017)
     db = mongo_client.plant_monitoring
     collection = db.sensor_data
@@ -59,8 +60,7 @@ def on_message(client, userdata, msg):
     record = {}
 
   # Emitting data to websocket server
-  with SocketIO('localhost', 9001) as socketio:
-    socketio.emit('monitoring', {'topic': topic, 'message': message})
+  socketio.emit('monitoring', {'topic': topic, 'message': message})
 
 client = mqtt.Client(client_id='testtttt1')
 client.on_connect = on_connect

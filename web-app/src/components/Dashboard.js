@@ -5,7 +5,7 @@ import openSocket from 'socket.io-client'
 import { Row, Col } from 'react-bootstrap';
 
 const websocketServer = 'fit5.fit-uet.tk:9001'
-// const websocketServer = '192.168.1.14:9001'
+// const websocketServer = '192.168.15.136:9001'
 
 export default class Dashboard extends Component {
   constructor(props) {
