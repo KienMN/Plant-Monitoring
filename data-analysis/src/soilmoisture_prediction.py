@@ -19,15 +19,6 @@ active_time_string = start_date + " " + start_time
 ts = time.strptime(active_time_string, "%Y-%m-%d %H:%M:%S")
 active_time_seconds = time.mktime(ts)
 
-# Future prediction duration measured by minute
-future_minutes = 30
-
-# Time step to next prediction time measured by second
-timestep_seconds = future_minutes * 60
-
-# Initial number of records
-number_of_records = 1080
-
 # Sampling pace measured by seconds
 sampling_pace = 5
 
@@ -49,6 +40,7 @@ def get_dataset_from_database(number_of_records = 0):
   for record in data:
     dataset.append(record.get('SoilMoisture'))
   dataset = np.array(dataset).reshape(-1, 1)
+  mongo_client.close()
   return dataset
 
 # print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(active_time_seconds + 86400)))
@@ -117,6 +109,7 @@ def predict_soil_moisture_from_database(activate_time_seconds, records_from_pres
       "PredictedSoilMoisture": predicted_values.item(i)
     }
     collection.insert_one(record)
+  mongo_client.close()
 
 def predict_soil_moisture_from_csvfile(input_filepath, output_filepath, future_minutes = 30):
   # Getting historical data
@@ -128,28 +121,6 @@ def predict_soil_moisture_from_csvfile(input_filepath, output_filepath, future_m
   # Saving to the csvfile
   predicted_values = pd.DataFrame(predicted_values)
   predicted_values.to_csv(output_filepath, index = False, header = False)
-
-def soilmoisture_prediction_process():
-  global active_time_seconds
-  global number_of_records
-  global future_minutes
-  
-  while True:
-    if active_time_seconds >= time.time():
-      active_time_struct = time.localtime(active_time_seconds)
-      
-      # Reset prediction time
-      if (active_time_struct.tm_hour == 12 and active_time_struct.tm_min == 0 and active_time_struct.tm_sec == 0):
-        active_time_seconds += 19 * 3600
-        number_of_records = 1080
-      
-      # Schedule prediction
-      s.enterabs(active_time_seconds, 1, predict_soil_moisture_from_database, argument=(active_time_seconds, number_of_records, future_minutes,))
-
-      s.run()
-
-    active_time_seconds += timestep_seconds
-    number_of_records += timestep_seconds // 5
 
 if __name__ == '__main__':
   # soilmoisture_prediction_process()
