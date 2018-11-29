@@ -8,6 +8,7 @@ export default class WateringControl extends Component {
       <div>
         <h3>Watering control</h3>
         <p>Pumping status: {(this.props.pumpingStatus) ? 'active' : 'deactive'}</p>
+        <p>Speed:</p>
         <FormControl
           type="number"
           value={this.props.speed}
