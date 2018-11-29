@@ -49,8 +49,7 @@ def get_dataset_from_database(number_of_records = 0):
   for record in data:
     dataset.append(record.get('SoilMoisture'))
   dataset = np.array(dataset).reshape(-1, 1)
-  # print(dataset.shape)
-  return np.array(dataset).reshape(-1, 1)
+  return dataset
 
 # print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(active_time_seconds + 86400)))
 
@@ -146,6 +145,7 @@ def soilmoisture_prediction_process():
       
       # Schedule prediction
       s.enterabs(active_time_seconds, 1, predict_soil_moisture_from_database, argument=(active_time_seconds, number_of_records, future_minutes,))
+
       s.run()
 
     active_time_seconds += timestep_seconds
