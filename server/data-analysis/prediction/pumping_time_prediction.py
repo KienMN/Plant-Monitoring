@@ -1,5 +1,9 @@
+"""
+Predicting pumping time base on soil moisture value
+"""
+
 # Importing the libraries
-import sched, time
+import time
 from pymongo import MongoClient
 import numpy as np
 import pandas as pd
@@ -12,7 +16,7 @@ sampling_pace = 5
 # Model file path
 classifier_path = os.path.join(os.path.dirname(__file__), "../models/classifier_1.sav")
 
-# Getting the dataset
+# Getting the predicted soilmoisture from database
 def get_predicted_soilmoisture_from_database(number_of_records = 0):
   mongo_client = MongoClient('localhost', 27017)
   db = mongo_client.plant_monitoring
@@ -24,6 +28,7 @@ def get_predicted_soilmoisture_from_database(number_of_records = 0):
   dataset = np.array(dataset).reshape(-1, 1)
   return dataset
 
+# Predicting the pumping time and duration from soil moisture values
 def predict_pumping_time(predicted_soilmoisture_values):
   # Loading the trained model
   classifier = joblib.load(classifier_path)
@@ -52,6 +57,7 @@ def predict_pumping_time(predicted_soilmoisture_values):
         break
   return (pumping_point_index, period)
 
+# Predicting the pumping time and duration from soil moisture values in database
 def predict_pumping_time_from_database(activate_time_seconds, future_minutes = 30):
   # Number of future records
   future_records = future_minutes * 60 // sampling_pace
@@ -75,10 +81,7 @@ def predict_pumping_time_from_database(activate_time_seconds, future_minutes = 3
   collection.insert_one(record)
   mongo_client.close()
 
-# output_filepath = os.path.join(os.path.dirname(__file__), '../data/output_demo.csv')
-# dataset_test = pd.read_csv(output_filepath, header = None).values
-# print(predict_pumping_time(dataset_test))
-
+# Predicting the pumping time and duration from soil moisture values csvfile
 def predict_pumping_time_from_csv(input_filepath, output_filepath):
   # Getting predicted data
   predicted_values = pd.read_csv(input_filepath, header = None).values
@@ -87,5 +90,5 @@ def predict_pumping_time_from_csv(input_filepath, output_filepath):
   pumping_point_index, period = predict_pumping_time(predicted_values)
   
   # Saving to the csvfile
-  predicted_values = pd.DataFrame(predicted_values)
+  predicted_values = pd.DataFrame([pumping_point_index, period])
   predicted_values.to_csv(output_filepath, index = False, header = False)

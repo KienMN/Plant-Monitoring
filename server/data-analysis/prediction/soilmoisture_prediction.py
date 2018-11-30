@@ -1,5 +1,9 @@
+"""
+Predicting pumping time base on soil moisture value
+"""
+
 # Importing the libraries
-import sched, time
+import time
 from pymongo import MongoClient
 import numpy as np
 import pandas as pd
@@ -42,8 +46,6 @@ def get_dataset_from_database(number_of_records = 0):
   dataset = np.array(dataset).reshape(-1, 1)
   mongo_client.close()
   return dataset
-
-# print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(active_time_seconds + 86400)))
 
 def predict_soil_moisture_values(historical_values, future_minutes):
   # Number of future records
@@ -120,9 +122,3 @@ def predict_soil_moisture_from_csvfile(input_filepath, output_filepath, future_m
   # Saving to the csvfile
   predicted_values = pd.DataFrame(predicted_values)
   predicted_values.to_csv(output_filepath, index = False, header = False)
-
-if __name__ == '__main__':
-  # soilmoisture_prediction_process()
-  input_filepath = os.path.join(os.path.dirname(__file__), '../data/input_demo.csv')
-  output_filepath = os.path.join(os.path.dirname(__file__), '../data/output_demo.csv')
-  predict_soil_moisture_from_csvfile(input_filepath, output_filepath, 10)

@@ -1,8 +1,14 @@
+"""
+Scheduling prediction of soil moisture and pumping time
+"""
+
 # Importing the libraries
 import sched, time
 
-# Importing the process
+# Importing the predicting soil moilsture process
 from soilmoisture_prediction import predict_soil_moisture_from_database
+
+# Importing the predicting pumping time process
 from pumping_time_prediction import predict_pumping_time_from_database
 
 # Scheduler
@@ -29,9 +35,10 @@ number_of_records = 1080
 # Sampling pace measured by seconds
 sampling_pace = 5
 
-# Model file path
-
 def prediction_process():
+  """
+  Scheduling prediction process
+  """
   global active_time_seconds
   global number_of_records
   global future_minutes
