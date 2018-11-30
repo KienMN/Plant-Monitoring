@@ -3,7 +3,8 @@ import { LineChart } from 'react-d3-components'
 import openSocket from 'socket.io-client'
 import { Button, FormControl } from 'react-bootstrap'
 
-const websocketServer = 'localhost:9001'
+const websocketServer = 'fit5.fit-uet.tk:9001'
+// const websocketServer = 'localhost:9001'
 
 export default class Demo extends Component {
   constructor(props) {
@@ -12,7 +13,7 @@ export default class Demo extends Component {
       'socket': openSocket(websocketServer),
       'demoData': [{
         label: '',
-        values: [{x: 0, y: 0}]
+        values: [{ x: 0, y: 0 }]
       }],
       'width': 700,
       'height': 400
@@ -35,6 +36,8 @@ export default class Demo extends Component {
           width={this.state.width}
           height={this.state.height}
           margin={{ top: 10, bottom: 50, left: 50, right: 10 }}
+          xAxis={{ label: "Time steps" }}
+          yAxis={{ label: "Soil moisture" }}
         />
 
       </div>
