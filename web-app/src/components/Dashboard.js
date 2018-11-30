@@ -6,8 +6,8 @@ import { Row, Col } from 'react-bootstrap';
 import PumpingPrediction from './PumpingPrediction';
 import Demo from './Demo';
 
-// const websocketServer = 'fit5.fit-uet.tk:9001'
-const websocketServer = 'localhost:9001'
+const websocketServer = 'fit5.fit-uet.tk:9001'
+// const websocketServer = 'localhost:9001'
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -67,15 +67,7 @@ export default class Dashboard extends Component {
       })
     })
 
-    // this.state.socket.on('webapp demo data', (json) => {
-    //   console.log(json)
-    //   this.setState({
-    //     'demoData': json.demoData
-    //   })
-    // })
-
     this.state.socket.emit('get prediction from database')
-    this.state.socket.emit('get demo data')
 
     this.pumpRequest = this.pumpRequest.bind(this)
     this.changePumpingSpeed = this.changePumpingSpeed.bind(this)
@@ -105,13 +97,14 @@ export default class Dashboard extends Component {
         <Row>
           <Col sm={6} xs={12}>
             {/* <h3>Average last 24 hours</h3> */}
-            <PumpingPrediction predictedTime={this.state.predictedTime} predictedDuration={this.state.predictedDuration}/>
+            <Demo demoData={this.state.demoData}/>
+            {/* <PumpingPrediction predictedTime={this.state.predictedTime} predictedDuration={this.state.predictedDuration}/> */}
           </Col>
           <Col sm={6} xs={12}>
             <WateringControl pumpingStatus={this.state.PumpingStatus} pump={this.pumpRequest} speed={this.state.PumpingSpeed} changeSpeed={this.changePumpingSpeed} />
           </Col>
         </Row>
-        <Demo demoData={this.state.demoData}/>
+        
       </div >
     )
   }
