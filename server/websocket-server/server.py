@@ -1,10 +1,10 @@
 # Adding path to libraries
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # print(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-print(sys.path)
+
 
 # print(os.path.abspath(os.path.join(os.path.dirname(__file__), '../data-analysis')))
 
@@ -16,7 +16,7 @@ import paho.mqtt.client as mqtt
 import time
 import json
 import pandas as pd
-import pumping_time_prediction
+from pumping_time_prediction import predict_pumping_time
 # from data-analysis
 # from data-analysis.
 
@@ -73,19 +73,27 @@ def handle_getting_prediction_from_database():
 def handle_getting_demo_data_from_csvfile():
   # input_filepath = os.path.join(os.path.dirname(__file__), '../data/input_demo.csv')
   output_filepath = os.path.join(os.path.dirname(__file__), '../data-analysis/data/output_demo.csv')
-  demo_path = ''
+  demofile_path = os.path.join(os.path.dirname(__file__), '../data-analysis/data/output_demo.csv')
   
   dataset = pd.read_csv(output_filepath, header = None).values
   n_samples = len(dataset)
 
-  print(dataset)
+  pumping_time_index, duration = predict_pumping_time(dataset)
+
+  print(pumping_time_index, duration)
+
+  # print(dataset)
   demo_data = [{
     'label': 'demo',
     'values': []
   }, {
     'label': 'point',
-    'values': [{'x': 85, 'y': dataset.item(85)}, {'x': 86, 'y': dataset.item(86)}]
+    'values': []
   }]
+
+  for i in range (duration + 1):
+    timesteps = int(pumping_time_index) + i
+    demo_data[1]['values'].append({'x': timesteps, 'y': dataset.item(timesteps)})
 
   for i in range (n_samples):
     demo_data[0]['values'].append({'x': i, 'y': dataset.item(i)})
