@@ -26,7 +26,6 @@ export default class Demo extends Component {
   }
 
   render() {
-    let data = this.props.demoData
     return (
       <div>
         <h3>Pumping time prediction demo</h3>
