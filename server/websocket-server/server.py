@@ -1,12 +1,6 @@
 # Adding path to libraries
 import os
 import sys
-# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-# print(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-
-# print(os.path.abspath(os.path.join(os.path.dirname(__file__), '../data-analysis')))
 
 # Importing path to data analysis
 from flask import Flask
@@ -17,8 +11,6 @@ import time
 import json
 import pandas as pd
 from pumping_time_prediction import predict_pumping_time
-# from data-analysis
-# from data-analysis.
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -53,36 +45,22 @@ def handle_getting_prediction_from_database():
   data = collection.find().skip(collection.count() - 1)
   for record in data:
     duration = record.get('Duration')
-
-    if duration < 0:
-      pumping_time = "You do not need to water"
-    else:
-      pumping_time = record.get('PredictionTime')
+    pumping_time = record.get('PredictionTime')
 
     json_data = {
       "pumpingTime": pumping_time,
       "duration": 0
     }
-
     socketio.emit('webapp prediction', json_data)
-
   mongo_client.close()
 
 # Handling getting prediction from csvfile event.
 @socketio.on('get demo data')
 def handle_getting_demo_data_from_csvfile():
-  # input_filepath = os.path.join(os.path.dirname(__file__), '../data/input_demo.csv')
-  output_filepath = os.path.join(os.path.dirname(__file__), '../data-analysis/data/output_demo.csv')
-  demofile_path = os.path.join(os.path.dirname(__file__), '../data-analysis/data/output_demo.csv')
-  
-  dataset = pd.read_csv(output_filepath, header = None).values
+  demofile_path = os.path.join(os.path.dirname(__file__), '../data-analysis/data/output_demo.csv')  
+  dataset = pd.read_csv(demofile_path, header = None).values
   n_samples = len(dataset)
-
   pumping_time_index, duration = predict_pumping_time(dataset)
-
-  print(pumping_time_index, duration)
-
-  # print(dataset)
   demo_data = [{
     'label': 'demo',
     'values': []

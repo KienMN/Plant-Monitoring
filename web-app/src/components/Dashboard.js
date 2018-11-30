@@ -6,8 +6,7 @@ import { Row, Col } from 'react-bootstrap';
 import PumpingPrediction from './PumpingPrediction';
 import Demo from './Demo';
 
-const websocketServer = 'fit5.fit-uet.tk:9001'
-// const websocketServer = 'localhost:9001'
+const websocketServer = 'localhost:9001'
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -96,15 +95,13 @@ export default class Dashboard extends Component {
           soilMoisture={this.state.SoilMoisture} lightIntensity={this.state.LightIntensity} />
         <Row>
           <Col sm={6} xs={12}>
-            {/* <h3>Average last 24 hours</h3> */}
             <Demo demoData={this.state.demoData}/>
-            {/* <PumpingPrediction predictedTime={this.state.predictedTime} predictedDuration={this.state.predictedDuration}/> */}
           </Col>
           <Col sm={6} xs={12}>
             <WateringControl pumpingStatus={this.state.PumpingStatus} pump={this.pumpRequest} speed={this.state.PumpingSpeed} changeSpeed={this.changePumpingSpeed} />
+            <PumpingPrediction predictedTime={this.state.predictedTime} predictedDuration={this.state.predictedDuration}/>
           </Col>
         </Row>
-        
       </div >
     )
   }
