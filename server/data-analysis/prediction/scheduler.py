@@ -2,8 +2,8 @@
 import sched, time
 
 # Importing the process
-from .soilmoisture_prediction import predict_soil_moisture_from_database
-from .pumping_time_prediction import predict_pumping_time_from_database
+from soilmoisture_prediction import predict_soil_moisture_from_database
+from pumping_time_prediction import predict_pumping_time_from_database
 
 # Scheduler
 s = sched.scheduler(time.time, time.sleep)
