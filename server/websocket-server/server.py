@@ -11,6 +11,7 @@ import time
 import json
 import pandas as pd
 from pumping_time_prediction import predict_pumping_time
+import sched, time
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -30,10 +31,32 @@ def handle_water_request(data):
   client = mqtt.Client(client_id="AT2018Client2")
   client.connect(broker)
   client.loop_start()
-  client.publish('AT2018/Pumping', str(data.get("value")).encode('UTF-8'))
-  time.sleep(5)
+  pumping_speed = data.get('value')
+  duration = data.get('duration')
+  client.publish('AT2018/Pumping', str(pumping_speed))
+  time.sleep(duration)
+  client.publish('AT2018/Pumping', 0)
+  # time.sleep(delay_stop)
+  # else:
+  #   client.publish('AT2018/Pumping', str(pumping_speed))
   client.loop_stop()
   client.disconnect()
+
+# Handling watering request. Getting request from webapp the publishing to the broker
+@socketio.on('stop pumping')
+def handle_stop_watering_request(data):
+  print('Received data', str(data))
+  print('Stop Pumping')
+  broker = 'broker.hivemq.com'
+  client = mqtt.Client(client_id="AT2018Client2")
+  client.connect(broker)
+  client.loop_start()
+  pumping_speed = data.get('value')
+  client.publish('AT2018/Pumping', str(pumping_speed))
+  time.sleep(3)
+  client.loop_stop()
+  client.disconnect()
+
 
 # Handling getting prediction from database event.
 @socketio.on('get prediction from database')
