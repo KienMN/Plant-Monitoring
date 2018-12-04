@@ -19,6 +19,7 @@ export default class Dashboard extends Component {
       'PumpingStatus': false,
       'socket': openSocket(websocketServer),
       'PumpingSpeed': 250,
+      'Duration': 10,
       'predictedTime': null,
       'predictedDuration': null,
       'demoData': null
@@ -70,11 +71,18 @@ export default class Dashboard extends Component {
 
     this.pumpRequest = this.pumpRequest.bind(this)
     this.changePumpingSpeed = this.changePumpingSpeed.bind(this)
+    this.changeDuration = this.changeDuration.bind(this)
   }
 
   pumpRequest() {
     let v = (this.state.PumpingStatus) ? 0 : this.state.PumpingSpeed
-    this.state.socket.emit("pumping", { value: v })
+    let d = this.state.Duration
+    // this.state.socket.emit("pumping", { value: v })
+    if (v !== 0) {
+      this.state.socket.emit("pumping", { value: v, duration: d })
+    } else {
+      this.state.socket.emit("stop pumping", { value: v, duration: d })
+    }
   }
 
   changePumpingSpeed(e) {
@@ -82,10 +90,13 @@ export default class Dashboard extends Component {
     this.setState({
       "PumpingSpeed": newSpeed
     })
-    if (this.state.pumpingStatus) {
-      console.log(newSpeed)
-      this.state.socket.emit("pumping", { value: newSpeed })
-    }
+  }
+
+  changeDuration(e) {
+    let newDuration = parseInt(e.target.value, 10)
+    this.setState({
+      "Duration": newDuration
+    })
   }
 
   render() {
@@ -95,11 +106,11 @@ export default class Dashboard extends Component {
           soilMoisture={this.state.SoilMoisture} lightIntensity={this.state.LightIntensity} />
         <Row>
           <Col sm={6} xs={12}>
-            <Demo demoData={this.state.demoData}/>
+            <Demo demoData={this.state.demoData} />
           </Col>
           <Col sm={6} xs={12}>
-            <WateringControl pumpingStatus={this.state.PumpingStatus} pump={this.pumpRequest} speed={this.state.PumpingSpeed} changeSpeed={this.changePumpingSpeed} />
-            <PumpingPrediction predictedTime={this.state.predictedTime} predictedDuration={this.state.predictedDuration}/>
+            <WateringControl pumpingStatus={this.state.PumpingStatus} pump={this.pumpRequest} speed={this.state.PumpingSpeed} duration={this.state.Duration} changeSpeed={this.changePumpingSpeed} changeDuration={this.changeDuration} />
+            <PumpingPrediction predictedTime={this.state.predictedTime} predictedDuration={this.state.predictedDuration} />
           </Col>
         </Row>
       </div >
