@@ -110,7 +110,7 @@ export default class Dashboard extends Component {
           </Col>
           <Col sm={6} xs={12}>
             <WateringControl pumpingStatus={this.state.PumpingStatus} pump={this.pumpRequest} speed={this.state.PumpingSpeed} duration={this.state.Duration} changeSpeed={this.changePumpingSpeed} changeDuration={this.changeDuration} />
-            <PumpingPrediction predictedTime={this.state.predictedTime} predictedDuration={this.state.predictedDuration} />
+            {/* <PumpingPrediction predictedTime={this.state.predictedTime} predictedDuration={this.state.predictedDuration} /> */}
           </Col>
         </Row>
       </div >
